@@ -1,0 +1,46 @@
+class my_comp extends uvm_component;
+  `uvm_component_utils(my_comp);
+  function new(string n="my_comp",uvm_component parent);
+    super.new(n,parent);
+  endfunction
+  int a=10;
+  virtual function int g();
+    return 10;
+  endfunction
+endclass
+
+class my_com extends my_comp;
+  `uvm_component_utils(my_com);
+  function new(string n="my_com",uvm_component parent);
+    super.new(n,parent);
+    a=30;
+  endfunction
+  function int g();
+    return 20;
+  endfunction
+  function void build_phase (uvm_phase phase);
+    super.build_phase(phase);
+  endfunction
+endclass
+
+class test extends uvm_test;
+  `uvm_component_utils(test);
+  function new(string n="test",uvm_component parent);
+    super.new(n,parent);
+  endfunction
+  my_comp m;
+   function void build_phase (uvm_phase phase);
+    super.build_phase(phase);
+     set_type_override_by_type(my_comp::get_type(),
+                              my_com::get_type());
+     m=my_comp::type_id::create("m",this);
+     $display(m.g());
+  endfunction
+endclass
+
+module test();
+  initial
+    begin
+    run_test("test");
+ 	end
+endmodule
