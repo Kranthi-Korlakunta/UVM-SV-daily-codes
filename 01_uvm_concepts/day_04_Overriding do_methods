@@ -1,0 +1,64 @@
+class tx extends uvm_sequence_item;
+  `uvm_object_utils(tx)
+  function new(string n="tx");
+    super.new(n);
+  endfunction
+  rand int a;
+  //overriding do_copy method
+  function void do_copy(uvm_object rhs);
+    tx t;
+    if(!$cast(t,rhs))
+      `uvm_fatal("CP","copy not occured");
+    //custum behaviour intentionally modified
+    this.a=t.a+1;
+  endfunction
+   //overriding do_compare method
+  function bit do_compare(uvm_object rhs,uvm_comparer comparer);
+    tx t;
+    if(!$cast(t,rhs))
+      begin
+      	$display("cast failed");
+        return 0;
+      end
+    if(super.do_compare(rhs,comparer)&&this.a==t.a)
+      return 1;
+    return 0;
+  endfunction
+   //overriding do_print method
+  function void do_print(uvm_printer p);
+    p.print_field("A",a,32,UVM_DEC);
+    p.print_object("Class",this);
+  endfunction
+endclass
+
+class test extends uvm_test;
+  `uvm_component_utils(test)
+  function new(string n="test",uvm_component p);
+    super.new(n,p);
+  endfunction
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+  endfunction
+  task run_phase(uvm_phase phase);
+    tx t1;
+  	tx t2,t3;
+    super.run_phase(phase);
+    phase.raise_objection(this);
+    t1 = tx::type_id::create("t1");
+    t2 = tx::type_id::create("t2");
+	t1.a=10;
+    t2.copy(t1);
+    $cast(t3,t2.clone());
+    `uvm_info("TEST",$sformatf("t1.a=%0d, t2.a=%0d, t3.a=%0d", t1.a, t2.a, t3.a), UVM_LOW)
+    `uvm_info("TEST",$sformatf("Is t1==t2 =%0d",t1.compare(t2)), UVM_LOW)
+    t1.print();
+	phase.drop_objection(this);
+  endtask
+endclass
+
+module top();
+  initial
+    begin
+      run_test("test");
+    end
+endmodule
