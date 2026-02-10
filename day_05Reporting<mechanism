@@ -1,0 +1,27 @@
+class comp extends uvm_component;
+  `uvm_component_utils(comp);
+   function new(string name, uvm_component parent);
+     super.new(name, parent);
+     set_report_verbosity_level(UVM_FULL);
+     set_report_max_quit_count(3);
+     `uvm_info("c","none",UVM_NONE);
+     `uvm_info("c","low",UVM_LOW);
+     `uvm_info("c","med",UVM_MEDIUM);
+     `uvm_info("c","high",UVM_HIGH);
+     `uvm_info("c","full",UVM_FULL);
+     `uvm_warning("c","war");
+     `uvm_error("c","err1");
+     //`uvm_fatal("c","fat");
+     `uvm_error("c","err2");
+     `uvm_error("c","err3");
+     `uvm_error("c","err4");
+     `uvm_fatal("c","fat");
+  endfunction
+endclass
+
+module tb();
+  initial
+    begin
+      run_test("comp");
+    end
+endmodule
