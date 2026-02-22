@@ -1,0 +1,28 @@
+module pattern_tb;
+    reg [4:0] m;
+    reg clk;
+
+    // Clock generator
+    initial begin
+        clk = 0;
+        forever #10 clk = ~clk;
+    end
+
+    // Pattern generator
+    initial begin
+      $dumpfile("wave.vcd");
+        $dumpvars(0, pattern_tb);
+       #10; m = 5'b00000;
+        #10 m = 5'b11111;
+        #10 m = 5'b00000;
+        #10 m = 5'b01000;
+        #10 m = 5'b00100;
+        #10 m = 5'b01000;
+        #10 m = 5'b00000;
+        #10 m = 5'b11111;
+        #10 m = 5'b00000;
+
+        #20 $finish;   // end simulation
+    end
+
+endmodule
